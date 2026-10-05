@@ -1,44 +1,24 @@
-# CLAUDE.md
+# CLAUDE.md — Excel → CSV Bölücü
 
-Bu dosya, bu proje üzerinde çalışırken Claude'un (Claude Code dahil) izlemesi gereken bağlamı ve kuralları içerir.
+İki sütunlu (`email | customData`) büyük Excel dosyalarını, her biri en fazla 99 satırlık CSV parçalarına bölen CLI aracı. Amaç: satır limiti olan e-posta doğrulama servislerine yüklenebilir parçalar üretmek (sonuçlar sonra **CSVMerger** ile birleştirilir). openpyxl read-only akış okuma, Jinja2 şablonla CSV üretimi, thread havuzuyla paralel yazma, ETA'lı ilerleme çubuğu.
 
-## Proje
+- GitHub: https://github.com/SHapeloglu/excel_to_csv (2026-05-03)
+- Mimari: `architect.md` · Görevler: `task.md` · Fikirler: `backlog.md` · Günlük: `session.md`
 
-**Excel → CSV Bölücü (Jinja2)** — Excel dosyasındaki **2 sütunlu** veriyi okur; her biri en fazla **99 satır** içeren ayrı CSV dosyalarına dışa aktarır. CSV çıktısı [Jinja2](https://jinja.palletsprojects.com/) şablonuyla üretilir.
-
-- GitHub: https://github.com/SHapeloglu/excel_to_csv
-
-## Teknoloji Yığını
-
-- pandas
-- openpyxl
-- Python
-
-## Önemli Dosyalar
-
-- `main.py`
-- `requirements.txt`
-
-Mimari ayrıntılar için bkz. `architect.md`.
-
-## Sık Kullanılan Komutlar
+## Komutlar
 
 ```bash
 python3 -m venv venv && . venv/bin/activate && pip install -r requirements.txt
-python main.py
+python main.py ornek_veri.xlsx                 # → output/ornek_veri_parca_001.csv …
+python main.py veri.xlsx -o /tmp/cikti -n 500 -w 4
 ```
 
-## Kurallar
+## Kurallar ve Tuzaklar
 
-- `.env`, parola, token ve API anahtarlarını asla commit etme.
-- Her çalışma oturumunun sonunda `session.md`ye kısa kayıt düş; görev durumunu `task.md`de güncelle.
-- Önceliklendirilmemiş fikirleri `backlog.md`ye yaz; somutlaşınca `task.md`ye taşı.
-
-## Çalışma Dosyaları
-
-| Dosya | Amaç |
-|---|---|
-| `architect.md` | Mimari ve dizin yapısı referansı |
-| `task.md` | Aktif / devam eden / tamamlanan görevler |
-| `backlog.md` | Önceliklendirilmemiş fikir ve teknik borç havuzu |
-| `session.md` | Oturum günlüğü — her oturum sonunda güncellenir |
+- Excel **tam olarak 2 sütun** olmalı (başlık satırına bakılır); değilse `ValueError`.
+- **CSV kaçışı yok:** `templates/csv_template.j2` alanları düz `join(',')` ile birleştiriyor; `customData` içinde virgül, tırnak veya satır sonu varsa CSV bozulur. Şablonu değiştirirken bunu düzelt ya da `csv` modülüne geç.
+- Dosyalar UTF-8 **BOM'suz** yazılıyor (Excel'de Türkçe karakterler bozuk görünebilir; hedef servis için sorun değil).
+- Dosya adı biçimi `<excel_adı>_parca_NNN.csv`; CSVMerger doğal sıralamayla bu sırayı korur — formatı değiştirme.
+- `excel_to_csv.zip` ve `output/` içindeki örnek çıktı repoda; gerçek müşteri listesi commit etme.
+- Test yok; değişiklikten sonra `python main.py ornek_veri.xlsx -o <geçici klasör>` ile dene.
+- Oturum sonunda `session.md`'ye kayıt düş, `task.md`'yi güncelle.

@@ -1,48 +1,26 @@
-# architect.md — Excel → CSV Bölücü (Jinja2) Mimari Referansı
-
-Bu dosya projenin yapısının hızlı-referans özetidir. Kod değiştikçe güncel tutun.
-
-## Genel Bakış
-
-Excel dosyasındaki **2 sütunlu** veriyi okur; her biri en fazla **99 satır** içeren ayrı CSV dosyalarına dışa aktarır. CSV çıktısı [Jinja2](https://jinja.palletsprojects.com/) şablonuyla üretilir.
-
-## Teknoloji Yığını
-
-- pandas
-- openpyxl
-- Python
-
-## Dizin Yapısı
+# architect.md — Excel → CSV Bölücü Mimarisi
 
 ```
-README.md
-excel_to_csv.zip
-main.py
-ornek_veri.xlsx
-output/
-  ornek_veri_parca_001.csv
-requirements.txt
-templates/
-  csv_template.j2
+main.py excel [-o OUT] [-n ROWS=99] [-w WORKERS=min(8, 2×CPU)]
+  │
+  ├─ count_nonempty_rows()      1. geçiş: boş olmayan satır sayısı → parça sayısı
+  ├─ iter_excel_rows()          2. geçiş: read_only generator, başlık = 2 sütun kontrolü, boş satırları atla
+  ├─ ROWS satırlık gruplar → task {template, columns, rows, path}
+  ├─ flush_tasks()              ThreadPoolExecutor ile render_and_write (Jinja2 → write_text utf-8)
+  └─ ProgressBar                dosya bazında ilerleme + ETA
 ```
 
-## Modüller / Kaynak Dosyalar
+## Dosyalar
 
-- `main.py` — Excel → CSV Bölücü (Jinja2 Tabanlı) — Büyük Dosya Sürümü
-
-## Giriş Noktaları ve Yapılandırma
-
-- `main.py`
-- `requirements.txt`
-
-## Dağıtım / Çalışma Ortamı
-
-- GitHub: https://github.com/SHapeloglu/excel_to_csv
-
-## Diğer Dokümanlar
-
-- `README.md`
+| Dosya | Rol |
+|---|---|
+| `main.py` | Tüm mantık (`ProgressBar`, `iter_excel_rows`, `count_nonempty_rows`, `render_and_write`, `flush_tasks`, `export`, argparse) |
+| `templates/csv_template.j2` | Başlık + satırlar, `,` ile birleştirme |
+| `ornek_veri.xlsx`, `output/ornek_veri_parca_001.csv` | Örnek girdi/çıktı |
+| `excel_to_csv.zip` | 2026-04-18 tarihli eski paket (kaynakların kopyası) |
 
 ## Mimari Kararlar
 
-_Önemli tasarım kararlarını ve gerekçelerini buraya ekleyin (ör. "X yerine Y seçildi çünkü ...")._
+- **İki geçişli okuma**: toplam satırı bilip ilerleme çubuğu ve parça sayısı göstermek için; bedeli dosyayı iki kez okumak.
+- **Jinja2 ile CSV**: çıktı formatını kod değiştirmeden şablonla özelleştirebilmek için (ör. farklı ayraç/başlık).
+- **99 satır varsayılanı**: hedef doğrulama servisinin yükleme limitine göre.

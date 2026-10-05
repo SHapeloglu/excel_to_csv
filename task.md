@@ -1,14 +1,11 @@
-# task.md — Excel → CSV Bölücü (Jinja2) Görev Takibi
-
-Bu dosya projedeki güncel görevleri takip etmek için kullanılır. Yeni bir göreve başlarken "Devam Eden"e taşı, bitirince "Tamamlanan"a taşı ve tarih ekle.
+# task.md — Excel → CSV Bölücü Görevleri
 
 ## 🔜 Sıradaki
 
-- [ ] `CLAUDE.md` / `architect.md` içeriğini doğrula ve eksikleri tamamla
-- [ ] Repo kökünde `.gitignore` yok — `venv/`, `__pycache__/`, `.env`, build çıktıları için eklenmeli.
-- [ ] Otomatik test bulunamadı — kritik akışlar için en azından duman (smoke) testleri eklenmeli.
-
-> Uzun vadeli / önceliklendirilmemiş fikirler için bkz. `backlog.md`.
+- [ ] CSV kaçışı: virgül/tırnak içeren alanlar için şablonda tırnaklama ya da `csv.writer`'a geçiş
+  - Kabul: `customData` = `a,"b"` olan satır, CSV okuyucuyla tek alan olarak geri okunuyor.
+- [ ] `excel_to_csv.zip` eski paketini repodan çıkar
+- [ ] Parça boyutu ve dosya adı biçimi için README'ye CSVMerger ile birlikte kullanım akışı ekle
 
 ## 🚧 Devam Eden
 
@@ -16,15 +13,5 @@ _(şu anda boş)_
 
 ## ✅ Tamamlanan
 
-- [x] 2026-10-05 — Proje çalışma dosyaları oluşturuldu
-
----
-
-### Görev Ekleme Şablonu
-
-```markdown
-- [ ] Kısa görev başlığı
-  - Bağlam: neden yapılıyor
-  - Kabul kriteri: ne zaman "bitti" sayılır
-  - İlgili dosyalar: ...
-```
+- [x] 2026-10-05 — Çalışma dosyaları kod okunarak yeniden yazıldı; örnek dosya ile çalıştırma doğrulandı (1 parça)
+- [x] 2026-05-03 — Büyük dosya sürümü (read_only + paralel yazma + ETA) yüklendi

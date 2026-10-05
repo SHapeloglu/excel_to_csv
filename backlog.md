@@ -1,21 +1,16 @@
-# backlog.md — Excel → CSV Bölücü (Jinja2) Fikir / Özellik Havuzu
+# backlog.md — Excel → CSV Bölücü Fikir Havuzu
 
-Bu dosya henüz önceliklendirilmemiş, "bir gün yapılabilir" fikirler ve özellik talepleri içindir. Bir fikir somutlaşıp sıraya girdiğinde buradan çıkar, `task.md`ye taşınır.
-
-## Fikirler
-
-_(henüz boş — yeni bir fikir geldiğinde aşağıdaki şablonla ekle)_
-
-## Koddaki TODO / FIXME Notları
-
-_(kodda TODO/FIXME notu bulunamadı)_
+- Sütun sayısını parametrik yap (`--columns email,customData` veya "tüm sütunlar").
+- CSV girdi desteği (sadece xlsx değil).
+- E-posta tekilleştirme ve basit sözdizimi filtresi bölme öncesinde.
+- `--bom` seçeneği (Excel'de açılacak çıktılar için).
+- CSVMerger ile tek paket (`split` / `merge` alt komutları).
 
 ## Ekleme Şablonu
 
 ```markdown
 ### Başlık
-
 - **Kategori:** yeni özellik / iyileştirme / teknik borç / araştırma
-- **Neden istendi:** kısa gerekçe
-- **Notlar:** büyüklük tahmini, bağımlılıklar, riskler
+- **Neden:** kısa gerekçe
+- **Notlar:** büyüklük, bağımlılıklar, riskler
 ```
